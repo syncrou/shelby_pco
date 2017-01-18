@@ -1,0 +1,22 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    byebug (9.0.6)
+    flog (4.4.0)
+      path_expander (~> 1.0)
+      ruby_parser (~> 3.1, > 3.1.0)
+      sexp_processor (~> 4.4)
+    path_expander (1.0.1)
+    ruby_parser (3.8.3)
+      sexp_processor (~> 4.1)
+    sexp_processor (4.7.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  byebug
+  flog
+
+BUNDLED WITH
+   1.13.7
