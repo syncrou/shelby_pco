@@ -110,7 +110,7 @@ CSV.open("pco_output.csv", "wb") do |csv|
     csv << ['', '', '', row[5], row[8], row[6], '', convert_dates(row[29]), manage_gender(row[28]),
             '', '', '', child?(row[35]), row[33], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[11]),
            city(row[16]), state(row[17]), zip(row[18]), phone(row[25]), '', '', row[31], row[34], row[35],
-           row[38], row[39], '', '', '', '', '', primary(row[36]), 'Yes'] unless shelby_cnt == 0
+           row[38], row[39], '', '', '', '', '', primary(row[35]), 'Yes'] unless shelby_cnt == 0
     shelby_cnt +=1
   end
 

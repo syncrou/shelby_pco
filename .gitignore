@@ -1,2 +1,4 @@
-*.csv
 .byebug_history
+PCOImport.csv
+ShelbyExport.csv
+pco_output.csv
