@@ -15,6 +15,10 @@ shelby_cnt = 0
 
 @city = nil
 
+def household_ids(str_id, str_position)
+  return str_id + "000" if str_position == "Head of House"
+end
+
 def convert_dates(str)
   return str unless str
   date_array = str.split('/')
@@ -107,8 +111,8 @@ CSV.open("pco_output.csv", "wb") do |csv|
 
   CSV.foreach("ShelbyExport.csv") do |row|
     #       0    1   2    3       4       5     6             7                   8 Gender
-    csv << [row[89], '', '', row[5], row[8], row[6], '', convert_dates(row[29]), manage_gender(row[28]),
-            '', '', '', child?(row[35]), row[33], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[11]),
+    csv << [household_ids(row[90], row[98]), '', '', row[5], row[8], row[6], '', convert_dates(row[29]), manage_gender(row[28]),
+            '', '', '', child?(row[36]), row[33], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[11]),
            city(row[16]), state(row[17]), zip(row[18]), phone(row[25]), '', '', row[31], row[34], row[35],
            row[38], row[39], '', '', '', '', '', primary(row[35]), 'Yes'] unless shelby_cnt == 0
     shelby_cnt +=1
