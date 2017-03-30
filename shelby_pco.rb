@@ -6,9 +6,9 @@ require 'csv'
 
 Bundler.require
 
-puts "Importing from Shelby to PCO csv file"
+puts 'Importing from Shelby to PCO csv file'
 
-puts "Building PCO Headers"
+puts 'Building PCO Headers'
 pco_headers = []
 pco_cnt = 0
 shelby_cnt = 0
@@ -23,15 +23,11 @@ end
 
 def convert_dates(str)
   return str unless str
-  date_array = str.split('/')
-  return str if date_array[2].match(/\d{4}/)
+  dates = str.split('/')
+  return str if dates[2].match(/\d{4}/)
 
-  if date_array[2].to_i >= 16
-    date_array[2] = "19#{date_array[2]}"
-  else
-    date_array[2] = "20#{date_array[2]}"
-  end
-  date_array.join('/')
+  dates[2] = dates[2].to_i >= 16 ? "19#{dates[2]}" : "20#{dates[2]}"
+  dates.join('/')
 end
 
 def manage_gender(str)
@@ -46,7 +42,7 @@ end
 def street(address)
   return if address.nil?
   if address.include?(',')
-    address.gsub!(/,/,'') rescue address
+    address.delete!(/,/, '') rescue address
   else
     address
   end
@@ -75,7 +71,7 @@ def zip(zip_str)
 end
 
 def build_area_code(phone_num)
-  CSV.foreach("area_codes_mi.csv") do |row|
+  CSV.foreach('area_codes_mi.csv') do |row|
     if @city == row[0]
       "#{row[0]}-#{phone_num}"
     else
@@ -87,37 +83,35 @@ end
 
 def phone(phone_str)
   return phone_str if phone_str.nil?
-  if phone_str.include?('.')
-    phone_str.gsub!('.','-')
-  end
+  phone_str.include?('.') && phone_str.tr!('.', '-')
   return phone_str if phone_str.size == 12
   build_area_code(phone_str)
 end
 
 def primary(str)
   return '' if str.nil?
-  return "TRUE" if str == "Head of House"
-  "FALSE"
+  return 'TRUE' if str == 'Head of House'
+  'FALSE'
 end
 
 
-CSV.foreach("PCOImport.csv") do |row|
+CSV.foreach('PCOImport.csv') do |row|
   break if pco_cnt == 1
   pco_headers = row
-  pco_cnt +=1
+  pco_cnt += 1
 end
 
-puts "Building PCO Output from Shelby Input csv"
-CSV.open("pco_output.csv", "wb") do |csv|
+puts 'Building PCO Output from Shelby Input csv'
+CSV.open('pco_output.csv', 'wb') do |csv|
   csv << pco_headers
 
-  CSV.foreach("ShelbyExport.csv") do |row|
+  CSV.foreach('ShelbyExport.csv') do |row|
     #       0    1   2    3       4       5     6             7                   8 Gender
     csv << [household_ids(row[90], row[103], row[116], row[129], row[142], row[155], row[168], row[181], row[194], row[207]), '', '', row[5], row[8], row[6], '', convert_dates(row[29]), manage_gender(row[28]),
             '', '', '', child?(row[36]), row[33], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[11]),
            city(row[16]), state(row[17]), zip(row[18]), phone(row[25]), '', '', row[31], row[34], row[35],
            row[38], row[39], '', '', '', '', '', primary(row[35]), 'Yes'] unless shelby_cnt == 0
-    shelby_cnt +=1
+    shelby_cnt += 1
   end
 
 end
