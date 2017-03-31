@@ -145,10 +145,10 @@ def csv_io(filename)
 
     CSV.foreach('ShelbyExport.csv') do |row|
       #       0    1   2    3       4       5     6             7                   8 Gender
-      csv << [household_ids(row[90], row[103], row[116], row[129], row[142], row[155], row[168], row[181], row[194], row[207]), '', '', row[5], row[8], row[6], '', convert_dates(row[headers.index("BirthDate")]), manage_gender(row[28]),
-              '', '', '', child?(row[36]), row[33], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[11]),
-              city(row[16]), state(row[17]), zip(row[18]), phone(row[25]), '', '', row[31], row[34], row[35],
-              row[38], row[39], '', '', '', '', '', primary(row[35]), 'Yes'] unless shelby_cnt == 0
+      csv << [household_ids(row[headers.index("FamilyMember1NameID")], row[103], row[116], row[129], row[142], row[155], row[168], row[181], row[194], row[207]), '', '', row[headers.index("FirstName")], row[headers.index("Salutation/Greeting")], row[headers.index("LastName")], '', convert_dates(row[headers.index("BirthDate")]), manage_gender(row[headers.index("Gender")]),
+              '', '', '', child?(row[headers.index("FamilyPosition")]), row[headers.index("NextYearEnvelope#")], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[headers.index("AddressLine1")]),
+              city(row[headers.index("City")]), state(row[headers.index("State")]), zip(row[headers.index("PostalCode")]), phone(row[headers.index("Phone#")]), '', '', row[headers.index("SocialSecurity#")], row[headers.index("MaritalStatus")], row[headers.index("MailStatus")],
+              row[headers.index("DifferentLastName")], row[headers.index("EmailAddress")], '', '', '', '', '', primary(row[headers.index("MailStatus")]), 'Yes'] unless shelby_cnt == 0
       shelby_cnt += 1
     end
   end
