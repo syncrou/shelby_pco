@@ -17,7 +17,7 @@ shelby_cnt = 0
 
 def household_ids(str_id, *strs)
   strs.compact!
-  strs.each { || return str_id + '000' } unless strs.empty?
+  strs.each { return str_id + '000' } unless strs.empty?
   return str_id + '000' unless str_id.nil?
 end
 
