@@ -3,17 +3,9 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'csv'
+require 'io/console'
 
 Bundler.require
-
-puts 'Importing from Shelby to PCO csv file'
-
-puts 'Building PCO Headers'
-pco_headers = []
-pco_cnt = 0
-shelby_cnt = 0
-
-@city = nil
 
 def household_ids(str_id, *strs)
   strs.compact!
@@ -78,7 +70,6 @@ def build_area_code(phone_num)
       "000-#{phone_num}"
     end
   end
-
 end
 
 def phone(phone_str)
@@ -94,24 +85,73 @@ def primary(str)
   'FALSE'
 end
 
-
-CSV.foreach('PCOImport.csv') do |row|
-  break if pco_cnt == 1
-  pco_headers = row
-  pco_cnt += 1
+def option
+  STDIN.getch == 'Y' ? file_stupid_checks : ''
 end
 
-puts 'Building PCO Output from Shelby Input csv'
-CSV.open('pco_output.csv', 'wb') do |csv|
-  csv << pco_headers
+def spinner(fps = 10)
+  spinny_chars = %w(| / - \\)
+  delay = 1.0 / fps
+  iter = 0
+  spinner = Thread.new do
+    while iter do
+      print spinny_chars[(iter += 1) % spinny_chars.length]
+      sleep delay
+      print "\b"
+    end
+  end
+  yield.tap {
+    iter = false
+    spinner.join
+  }
+end
 
-  CSV.foreach('ShelbyExport.csv') do |row|
-    #       0    1   2    3       4       5     6             7                   8 Gender
-    csv << [household_ids(row[90], row[103], row[116], row[129], row[142], row[155], row[168], row[181], row[194], row[207]), '', '', row[5], row[8], row[6], '', convert_dates(row[29]), manage_gender(row[28]),
-            '', '', '', child?(row[36]), row[33], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[11]),
-           city(row[16]), state(row[17]), zip(row[18]), phone(row[25]), '', '', row[31], row[34], row[35],
-           row[38], row[39], '', '', '', '', '', primary(row[35]), 'Yes'] unless shelby_cnt == 0
-    shelby_cnt += 1
+def file_stupid_checks
+  print 'Enter filename: '
+  filename = gets.chomp.strip
+
+  if Dir.glob('*.{csv}').empty?
+    print "Cannot find any CSVs in this directory, would you like to try again (Y/n)? \n"
+    option
+  elsif !File.file?(filename)
+    print "File not found in current directory. Do not pass go, do not collect 200$. Try again (Y/n)? \n"
+    option
+  else
+    print "Importing #{filename} from Shelby to PCO csv file... \n"
+    spinner { sleep rand(4) + 1 }
+    puts 'Building PCO Headers...'
+    csv_io(filename)
+  end
+end
+
+def csv_io(filename)
+  headers = CSV.open('ShelbyExport.csv', 'r', &:first)
+
+  pco_headers = []
+  pco_cnt = 0
+  shelby_cnt = 0
+  @city = nil
+
+  CSV.foreach(filename) do |row|
+    break if pco_cnt == 1
+    pco_headers = row
+    pco_cnt += 1
   end
 
+  puts 'Building PCO Output from Shelby Input csv...'
+  puts "Done! \n"
+  CSV.open('pco_output.csv', 'wb') do |csv|
+    csv << pco_headers
+
+    CSV.foreach('ShelbyExport.csv') do |row|
+      #       0    1   2    3       4       5     6             7                   8 Gender
+      csv << [household_ids(row[90], row[103], row[116], row[129], row[142], row[155], row[168], row[181], row[194], row[207]), '', '', row[5], row[8], row[6], '', convert_dates(row[headers.index("BirthDate")]), manage_gender(row[28]),
+              '', '', '', child?(row[36]), row[33], '', '', '', 'TRUE', 'TRUE', 'TRUE', street(row[11]),
+              city(row[16]), state(row[17]), zip(row[18]), phone(row[25]), '', '', row[31], row[34], row[35],
+              row[38], row[39], '', '', '', '', '', primary(row[35]), 'Yes'] unless shelby_cnt == 0
+      shelby_cnt += 1
+    end
+  end
 end
+
+file_stupid_checks
