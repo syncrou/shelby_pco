@@ -143,7 +143,7 @@ def csv_io(filename)
   CSV.open('pco_output.csv', 'wb') do |csv|
     csv << pco_headers
 
-    CSV.foreach('ShelbyExport.csv') do |row|
+    CSV.foreach(filename) do |row|
       #       0    1   2    3       4       5     6             7                   8 Gender
       csv << [household_ids(row[headers.index("FamilyMember1NameID")], row[103], row[116], row[129], row[142], row[155], row[168], row[181], row[194], row[207]), 
               '', '', row[headers.index("FirstName")], row[headers.index("Salutation/Greeting")], row[headers.index("LastName")], '', convert_dates(row[headers.index("BirthDate")]), 
