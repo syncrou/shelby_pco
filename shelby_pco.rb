@@ -115,6 +115,7 @@ def file_stupid_checks
   end 
 
   l = Dir.glob('*.{csv}').each &:to_s
+  Readline.completer_word_break_characters = '.csv'
   comp = proc { |s| l.grep(/^#{Regexp.escape(s)}/) }
   line = Readline.readline('Enter start of filename: ', true)
   filename = line.strip
