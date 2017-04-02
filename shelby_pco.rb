@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'csv'
-require 'io/console'
 require 'readline'
 require 'pry'
 
@@ -87,10 +86,6 @@ def primary(str)
   'FALSE'
 end
 
-def option
-  STDIN.getch == 'Y' ? file_stupid_checks : ''
-end
-
 def spinner(fps = 10)
   spinny_chars = %w(| / - \\)
   delay = 1.0 / fps
@@ -109,14 +104,9 @@ def spinner(fps = 10)
 end
 
 def file_stupid_checks
-  if Dir.glob('*.{csv}').empty?
-    print "Cannot find any CSVs in this directory, would you like to try again (Y/n)? \n"
-    option
-  end 
-
-  l = Dir.glob('*.{csv}').each &:to_s
+  print 'Cannot find any CSVs here.' if Dir.glob('*.{csv}').empty?
+  
   Readline.completer_word_break_characters = '.csv'
-  comp = proc { |s| l.grep(/^#{Regexp.escape(s)}/) }
   line = Readline.readline('Enter start of filename: ', true)
   filename = line.strip
   print "Importing #{filename} from Shelby to PCO csv file... \n"
