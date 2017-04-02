@@ -4,6 +4,8 @@ require 'rubygems'
 require 'bundler/setup'
 require 'csv'
 require 'io/console'
+require 'readline'
+require 'pry'
 
 Bundler.require
 
@@ -107,21 +109,19 @@ def spinner(fps = 10)
 end
 
 def file_stupid_checks
-  print 'Enter filename: '
-  filename = gets.chomp.strip
-
   if Dir.glob('*.{csv}').empty?
     print "Cannot find any CSVs in this directory, would you like to try again (Y/n)? \n"
     option
-  elsif !File.file?(filename)
-    print "File not found in current directory. Do not pass go, do not collect 200$. Try again (Y/n)? \n"
-    option
-  else
-    print "Importing #{filename} from Shelby to PCO csv file... \n"
-    spinner { sleep rand(4) + 1 }
-    puts 'Building PCO Headers...'
-    csv_io(filename)
-  end
+  end 
+
+  l = Dir.glob('*.{csv}').each &:to_s
+  comp = proc { |s| l.grep(/^#{Regexp.escape(s)}/) }
+  line = Readline.readline('Enter start of filename: ', true)
+  filename = line.strip
+  print "Importing #{filename} from Shelby to PCO csv file... \n"
+  spinner { sleep rand(4) + 1 }
+  puts 'Building PCO Headers...'
+  csv_io(filename)
 end
 
 def csv_io(filename)
