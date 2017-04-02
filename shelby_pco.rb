@@ -16,7 +16,7 @@ end
 def convert_dates(str)
   return str unless str
   dates = str.split('/')
-  return str if dates[2].match(/\d{4}/)
+  return str if dates[2] =~ /\d{4}/
 
   dates[2] = dates[2].to_i >= 16 ? "19#{dates[2]}" : "20#{dates[2]}"
   dates.join('/')
