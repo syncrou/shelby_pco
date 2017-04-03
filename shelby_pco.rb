@@ -4,7 +4,6 @@ require 'rubygems'
 require 'bundler/setup'
 require 'csv'
 require 'readline'
-require 'pry'
 
 Bundler.require
 
