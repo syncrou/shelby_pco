@@ -122,7 +122,7 @@ def csv_io(filename)
   shelby_cnt = 0
   @city = nil
 
-  CSV.foreach(filename) do |row|
+  CSV.foreach('PCOImport.csv') do |row|
     break if pco_cnt == 1
     pco_headers = row
     pco_cnt += 1
