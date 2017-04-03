@@ -9,8 +9,8 @@ Bundler.require
 
 def household_ids(str_id, *strs)
   strs.compact!
-  strs.each { return str_id + '000' } unless strs.empty?
-  return str_id + '000' unless str_id.nil?
+  strs.each { return str_id + '000' } unless strs.empty? || str_id.nil?
+  str_id.nil? ? '' : str_id + '000'
 end
 
 def convert_dates(str)
