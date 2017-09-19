@@ -154,7 +154,7 @@ def csv_io(filename)
               '', '', row[headers.index("FirstName")], row[headers.index("Salutation/Greeting")], row[headers.index("LastName")], '', convert_dates(row[headers.index("BirthDate")]),
               manage_gender(row[headers.index("Gender")]), '', '', '', child?(row[headers.index("FamilyPosition")]), row[headers.index("MaritalStatus")], row[headers.index("NextYearEnvelope#")], '', '', 'TRUE', 'TRUE', 'TRUE', street(row[headers.index("AddressLine1")]),
               city(row[headers.index("City")]), state(row[headers.index("State")]), zip(row[headers.index("PostalCode")]), phone(row[headers.index("Phone#")]), mail_status(row[headers.index("MailStatus")]), '', row[headers.index("SocialSecurity#")], '',
-              row[headers.index("DifferentLastName")], row[headers.index("EmailAddress")], '', '', '', '', '', primary(row[headers.index("MailStatus")]), 'Yes'] unless shelby_cnt == 0
+              row[headers.index("EmailAddress")], '', '', '', '', '', '', primary(row[headers.index("MailStatus")]), 'Yes'] unless shelby_cnt == 0
       shelby_cnt += 1
     end
   end
