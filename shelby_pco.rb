@@ -87,6 +87,13 @@ def build_area_code(phone_num)
   end
 end
 
+def mobile_phone(phone_str)
+  return phone_str if phone_str.nil?
+  phone_str.include?('.') && phone_str.tr!('.', '-')
+  return phone_str if phone_str.size == 8
+  build_area_code(phone_str)
+end
+
 def phone(phone_str)
   return phone_str if phone_str.nil?
   phone_str.include?('.') && phone_str.tr!('.', '-')
@@ -129,6 +136,11 @@ def file_stupid_checks
   csv_io(filename)
 end
 
+def force_next(str)
+  return '-' if str.nil?
+  str
+end
+
 def csv_io(filename)
   headers = CSV.open(filename, 'r', &:first)
 
@@ -151,7 +163,7 @@ def csv_io(filename)
     CSV.foreach(filename, :encoding => 'ISO-8859-1') do |row|
       #       1   2    3       4       5     6             7                   8 Gender
       csv << [household_ids(row[headers.index("FamilyMember1NameID")], row[103], row[116], row[129], row[142], row[155], row[168], row[181], row[194], row[207]),
-              '', '', row[headers.index("FirstName")], row[headers.index("Salutation/Greeting")], row[headers.index("LastName")], '', convert_dates(row[headers.index("BirthDate")]),
+              '', '', force_next(row[headers.index("FirstName")]), row[headers.index("Salutation/Greeting")], row[headers.index("LastName")], '', convert_dates(row[headers.index("BirthDate")]),
               manage_gender(row[headers.index("Gender")]), '', '', '', child?(row[headers.index("FamilyPosition")]), row[headers.index("MaritalStatus")], row[headers.index("NextYearEnvelope#")], '', '', 'TRUE', 'TRUE', 'TRUE', street(row[headers.index("AddressLine1")]),
               city(row[headers.index("City")]), state(row[headers.index("State")]), zip(row[headers.index("PostalCode")]), phone(row[headers.index("Phone#")]), phone(row[headers.index("Phone#6")]),row[headers.index("Envelope#")], mail_status(row[headers.index("Envelope#")]), row[headers.index("FamilyPosition")],
               row[headers.index("EmailAddress")], row[headers.index("WebAddress")], '', '', '', '', '', primary(row[headers.index("MailStatus")]), 'Yes'] unless shelby_cnt == 0
